@@ -7,7 +7,7 @@
 ### What are the key strengths of each person on the team?
 
 Emily - Backend building servers and databases. ~~Godlike CSS Skills.~~
-Josh - Awesome support, teamplayer, hype-train
+Josh - Talking through algorithms, good understanding of concepts. Awesome support, teamplayer, hype-train
 Christina - Top tier organization and communication skills, detail oriented and debugging skills
 
 ### How can you best utilize these strengths in the execution of your project?
@@ -28,19 +28,19 @@ Team meeting, decide tasks, execute. Communicate with eachother when it comes to
 
 ### What will be your group’s process to resolve conflict, when it arises?
 
-Open communication, address problems as they arise. Arm wrestling.
+Open communication and being curtious, if someone begins to feel frustrated they can call for a 5 minute break and we can come back ready to solve any issues. If problems escalate, call Sara to mediate.
 
 ### What will your team do if one person is taking over the project and not letting the other members contribute?
 
-Call em out!
+Voice if you feel you're not contributing enough. We can take a couple of minutes every hour before a break to debrief and make sure everyone is feeling good about the workflow.
 
 ### How will you approach each other and the challenges of the project knowing that it is impossible for all members to be at the exact same place in understanding and skill level?
 
-Help eachother understand, call a TA if it is not working out explaining.
+Help eachother understand, call a TA or Sara if it is not working out explaining.
 
 ### How will you raise concerns to members who are not adequately contributing? How and when will you escalate the conflict if your resolution attempts are unsuccessful?
 
-Call em out! Communicate
+- We can take a couple of minutes every hour before a break to assess where we're at and if there are portions of the project that need attention we can voice that the person who is contributing the least take over those parts of the project. If the issues continue to where it is hindering the progess of the project, then let Sara know.
 
 ### What hours will you be available to communicate?
 
@@ -52,7 +52,7 @@ Slack, text
 
 ### How often will you take breaks?
 
-As needed
+10 minutes every hour, 5 minutes when needed if we are getting frustrated.
 
 ### What is your plan if you start to fall behind?
 
@@ -64,7 +64,7 @@ Text, slack
 
 ### What is your strategy for ensuring everyone’s voice is heard?
 
-ask everyone
+At each 10 minute break, take a couple of minutes to assess where we're at, debrief, everyone gets a chance to say anything they feel they need to say.
 
 ### How will you ensure that you are creating a safe environment where everyone feels comfortable speaking up?
 
@@ -76,7 +76,7 @@ outline the project, dig deeper into the components of the project, list tasks a
 
 ### What project management tool will be used?
 
-Trello
+Trello (figma for a visual)
 
 ### What components of your project will live on GitHub?
 
@@ -96,12 +96,12 @@ we will have main branch protection, but anyone can complete pull requests.
 
 ### Who merges PRs?
 
-individuals
+individuals push to their branches
 
 ### How often will you merge?
 
 We'll have portions of the project split between three people, when each person is done with their portion they will push and once everyone's portions are pushed up we will merge to test and then to main
-``
+
 ### How will you communicate that it’s time to merge?
 
 sound the alarms
