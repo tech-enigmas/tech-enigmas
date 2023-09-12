@@ -6,8 +6,8 @@ const jwt = require("jsonwebtoken");
 
 const SECRET = process.env.SECRET || "secretstring";
 
-const userModel = (sequelize, DataTypes) => {
-  const model = sequelize.define("Users", {
+const userModel = (mongoose, DataTypes) => {
+  const model = mongoose.define("Users", {
     username: { type: DataTypes.STRING, required: true, unique: true },
     password: { type: DataTypes.STRING, required: true, unique: true },
     role: {
