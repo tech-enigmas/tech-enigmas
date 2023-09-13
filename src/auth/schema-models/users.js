@@ -10,6 +10,7 @@ const userSchema = new Schema ({
   role: String,
 });
 
-const userModel = mongoose.model('Post', userSchema);
+const userModel = mongoose.model('User', userSchema);
+// 'User' is the name of the collection that will hold the JSON objects
 
 module.exports = userModel;

@@ -15,5 +15,7 @@ const postSchema = new Schema ({
 });
 
 const postModel = mongoose.model('Post', postSchema);
+// 'Post' is the name of the collection that will hold the JSON objects
+
 
 module.exports = postModel;
