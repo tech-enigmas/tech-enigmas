@@ -1,6 +1,6 @@
-const inquirer = require("inquirer");
-const mongoose = require('mongoose')
-const Post = require('../auth/schema-models/post')
+const inquirer = require('inquirer');
+const mongoose = require('mongoose');
+const Post = require('../auth/schema-models/post');
 require('dotenv').config();
 
 mongoose.connect(process.env.MONGODB_URL);
@@ -14,17 +14,16 @@ function signIn() {
   inquirer
     .prompt([
       {
-        name: "user_name",
-        type: "input",
-        message: "What is your name?",
-      }
+        name: 'user_name',
+        type: 'input',
+        message: 'What is your name?',
+      },
     ])
 
     .then((answer) => {
       console.log(`Hello ${answer.user_name}. What would you like to do?`);
 
       baseMenu();
-
     });
 }
 
@@ -32,10 +31,10 @@ function baseMenu() {
   inquirer
     .prompt([
       {
-        name: "menu",
-        type: "list",
-        message: "Welcome! Please pick an option. . .",
-        choices: ["create a post", "read somthing"],
+        name: 'menu',
+        type: 'list',
+        message: 'Welcome! Please pick an option. . .',
+        choices: ['create a post', 'read somthing'],
       },
     ])
 
@@ -45,7 +44,7 @@ function baseMenu() {
 
       // }
       // if (menu.choices[1]) {
-        readPostedBlog();
+      readPostedBlog();
       // }
     });
 }
@@ -53,7 +52,7 @@ function baseMenu() {
 function selectPostedBlog() {
   const blogPosts = [];
 
-  Post.find({},{ maxTimeMS: 20000 })
+  Post.find({}, { maxTimeMS: 20000 })
     .exec()
     .then((posts) => {
       posts.forEach((post) => {
@@ -74,8 +73,6 @@ function selectPostedBlog() {
     .catch((error) => {
       console.error('Error fetching data', error);
     });
-  }
-
-
+}
 
 signIn();
