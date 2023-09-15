@@ -24,7 +24,7 @@ function signIn() {
       console.log(`Hello ${answer.user_name}. What would you like to do?`);
 
       baseMenu();
-      createBlog();
+    
     });
 }
 function createBlog() {
@@ -69,32 +69,30 @@ function baseMenu() {
     ])
 
     .then((answer) => {
-      console.log(answer.menu);
-      // if (menu.choices[0]) {
-
-      // }
-      // if (menu.choices[1]) {
-      // readPostedBlog();
-      // }
+      // console.log(answer.menu);
+      if (answer.menu === 'create a post') {
+        createBlog();
+      }
+      if (answer.menu === 'read somthing') {
+        // console.log("---------", answer.selectedPost);
+        selectPostedBlog();
+      }
     });
 }
 
 function selectPostedBlog() {
-  const blogPosts = [];
-
-  Post.find({}, { maxTimeMS: 20000 })
+  Post.find()
     .exec()
     .then((posts) => {
-      posts.forEach((post) => {
-        blogPosts.push({
-          type: 'list',
-          name: 'selectedPost',
-          message: 'Select a post',
-          choices: posts.map((post) => post.title),
-        });
-        console.log('========', posts.title);
-      });
-      return inquirer.prompt(blogPosts);
+      console.log(posts);
+      const blogPosts = {
+        type: 'list',
+        name: 'selectedPost',
+        message: 'Select a post',
+        choices: posts.map(post => post.title)
+      };
+
+      return inquirer.prompt([blogPosts]);
     })
     .then((answers) => {
       const selectedPost = answers.selectedPost;
