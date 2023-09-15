@@ -24,6 +24,36 @@ function signIn() {
       console.log(`Hello ${answer.user_name}. What would you like to do?`);
 
       baseMenu();
+      createBlog();
+    });
+}
+function createBlog() {
+  inquirer
+    .prompt([
+      {
+        type: 'editor',
+        name: 'blog_post',
+        message: 'What is your blog about?',
+      },
+    ])
+    .then((answer) => {
+      try {
+        const blogPost = new Post({
+          title: 'tester',
+          body: answer.blog_post,
+          id: 100,
+          status: true,
+          userId: 100,
+          keyWord: ['buffalo'],
+          likes: 1000,
+          comments: [],
+        });
+        // const newAnswer = new Post({ body: answer.blog_post });
+        blogPost.save().then((result) => console.log(result));
+        console.info('Answer:', answer.blog_post);
+      } catch (e) {
+        console.log(e);
+      }
     });
 }
 
@@ -44,7 +74,7 @@ function baseMenu() {
 
       // }
       // if (menu.choices[1]) {
-      readPostedBlog();
+      // readPostedBlog();
       // }
     });
 }
