@@ -1,19 +1,19 @@
-"use strict";
+'use strict';
 
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 // const { users } = require('../../..');
 
-const SECRET = process.env.SECRET || "secretstring";
+const SECRET = process.env.SECRET || 'secretstring';
 
 const userModel = (mongoose, DataTypes) => {
-  const model = mongoose.define("Users", {
+  const model = mongoose.define('Users', {
     username: { type: DataTypes.STRING, required: true, unique: true },
     password: { type: DataTypes.STRING, required: true, unique: true },
     role: {
-      type: DataTypes.ENUM("user", "creator"),
+      type: DataTypes.ENUM('user', 'creator'),
       required: true,
-      defaultValue: "user",
+      defaultValue: 'user',
     },
     token: {
       type: DataTypes.VIRTUAL,
@@ -29,8 +29,8 @@ const userModel = (mongoose, DataTypes) => {
       type: DataTypes.VIRTUAL,
       get() {
         const acl = {
-          user: ["read"],
-          creator: ["read", "create"],
+          user: ['read'],
+          creator: ['read', 'create'],
         };
         return acl[this.role];
       },
@@ -47,7 +47,7 @@ const userModel = (mongoose, DataTypes) => {
     if (valid) {
       return users;
     }
-    throw new Error("Invalid User");
+    throw new Error('Invalid User');
   };
 
   model.authenticateToken = async function (token) {
@@ -57,7 +57,7 @@ const userModel = (mongoose, DataTypes) => {
       if (users) {
         return users;
       }
-      throw new Error("User Not Found");
+      throw new Error('User Not Found');
     } catch (e) {
       throw new Error(e.message);
     }
