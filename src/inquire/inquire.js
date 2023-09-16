@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const Post = require('../auth/schema-models/post');
 require('dotenv').config();
 
-
 const blogPostSchema = new mongoose.Schema({
   title: String,
   body: String,
@@ -50,8 +49,8 @@ function createBlogPost() {
         message: 'What is your blog about?',
       },
     ])
-    .then(async(answer) => {
-      if(!answer.blog_body || !answer.blog_title){
+    .then(async (answer) => {
+      if (!answer.blog_body || !answer.blog_title) {
         return;
       }
       try {
@@ -66,14 +65,18 @@ function createBlogPost() {
           comments: [],
         });
         // const newAnswer = new Post({ body: answer.blog_post });
-        blogPost.save().then((result) => console.log(`Blog post ${result.title} was added successfully`));
+        blogPost
+          .save()
+          .then((result) =>
+            console.log(`Blog post ${result.title} was added successfully`)
+          );
         // console.info('Answer:', answer.blog_title);
         await wait(1500);
         baseMenu();
       } catch (e) {
         console.log(e);
       }
-    });  
+    });
 }
 
 function baseMenu() {
@@ -83,7 +86,7 @@ function baseMenu() {
         name: 'menu',
         type: 'list',
         message: 'Welcome! Please pick an option. . .',
-        choices: ['Create a post', 'Read something'],
+        choices: ['Create a post', 'Read something', 'Delete post'],
       },
     ])
 
@@ -93,6 +96,9 @@ function baseMenu() {
       }
       if (answer.menu === 'Read something') {
         selectPostedBlog();
+      }
+      if (answer.menu === 'Delete post') {
+        deleteBlogPost();
       }
     });
 }
@@ -106,7 +112,7 @@ function selectPostedBlog() {
         type: 'list',
         name: 'selectedPost',
         message: 'Select a post',
-        choices: posts.map(post => post.title)
+        choices: posts.map((post) => post.title),
       };
 
       return inquirer.prompt([blogPosts]);
@@ -114,20 +120,79 @@ function selectPostedBlog() {
     .then((answers) => {
       const selectedPost = answers.selectedPost;
       console.log(`You selected: ${selectedPost}`);
-      Post.findOne({title: selectedPost})
-        .then((result)=> {
-          console.log(result.body);
-        });
+      Post.findOne({ title: selectedPost }).then((result) => {
+        console.log(result.body);
+      });
     })
-
 
     .catch((error) => {
       console.error('Error fetching data', error);
     });
 }
 
+function deleteBlogPost() {
+  Post.find({}, 'title')
+    .exec()
+    .then((posts) => {
+      const postTitles = posts.map((post) => post.title);
+      inquirer
+        .prompt([
+          {
+            type: 'list',
+            name: 'post_title',
+            message: 'Select a post to delete:',
+            choices: postTitles,
+          },
+        ])
+        .then(async (answer) => {
+          try {
+            const postToDelete = await Post.findOneAndDelete({
+              title: answer.post_title,
+            });
+            if (postToDelete) {
+              console.log(`Post '${postToDelete.title}' has been deleted.`);
+            } else {
+              console.log(`No post found with title '${answer.post_title}'.`);
+            }
+            await wait(1500);
+            baseMenu(); // Return to the main menu
+          } catch (e) {
+            console.error('Error:', e);
+          }
+        });
+    })
+    .catch((error) => {
+      console.error('Error fetching post titles', error);
+    });
+}
+// inquirer
+//   .prompt([
+//     {
+//       type: 'input',
+//       name: 'post_title',
+//       message: 'Select the title of the post you want to delete:',
+//     },
+//   ])
+//   .then(async (answer) => {
+//     try {
+//       const postToDelete = await Post.findOneAndDelete({
+//         title: answer.post_title,
+//       });
+//       if (postToDelete) {
+//         console.log(`Post '${postToDelete.title}' has been deleted.`);
+//       } else {
+//         console.log(`No post found with title '${answer.post_title}'.`);
+//       }
+//       await wait(1500);
+//       baseMenu(); // Return to the main menu
+//     } catch (e) {
+//       console.error('Error:', e);
+//     }
+//   });
+// }
+
 function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function startWait() {
