@@ -3,13 +3,15 @@ const mongoose = require('mongoose');
 const Post = require('../auth/schema-models/post');
 require('dotenv').config();
 
-mongoose.connect(process.env.MONGODB_URL);
 
-const db = mongoose.connection;
+function startServer() {
+  mongoose.connect(process.env.MONGODB_URL);
 
-db.on('error', console.error.bind(console, 'Connection error'));
-db.once('open', () => console.log('Mongoose is connected'));
+  const db = mongoose.connection;
 
+  db.on('error', console.error.bind(console, 'Connection error'));
+  db.once('open', () => console.log('Mongoose is connected'));
+}
 function signIn() {
   inquirer
     .prompt([
@@ -20,41 +22,53 @@ function signIn() {
       },
     ])
 
-    .then((answer) => {
+    .then(async (answer) => {
       console.log(`Hello ${answer.user_name}. What would you like to do?`);
-
+      await wait(2000);
       baseMenu();
-    
     });
 }
-function createBlog() {
+const blogPostSchema = new mongoose.Schema({
+  title: String,
+  body: String,
+});
+const BlogPosts = mongoose.model('BlogPost', blogPostSchema);
+function createBlogPost() {
   inquirer
     .prompt([
       {
-        type: 'editor',
-        name: 'blog_post',
+        type: 'input',
+        name: 'blog_title',
+        message: 'What is the name of your blog?',
+      },
+      {
+        type: 'input',
+        name: 'blog_body',
         message: 'What is your blog about?',
       },
     ])
     .then((answer) => {
+      if(!answer.blog_body || !answer.blog_title){
+        return;
+      }
       try {
         const blogPost = new Post({
-          title: 'tester',
-          body: answer.blog_post,
+          title: answer.blog_title,
+          body: answer.blog_body,
           id: 100,
           status: true,
           userId: 100,
-          keyWord: ['buffalo'],
+          keyWord: [],
           likes: 1000,
           comments: [],
         });
         // const newAnswer = new Post({ body: answer.blog_post });
-        blogPost.save().then((result) => console.log(result));
-        console.info('Answer:', answer.blog_post);
+        blogPost.save().then((result) => console.log(`Blog post ${result.title} was added successfully`));
+        // console.info('Answer:', answer.blog_title);
       } catch (e) {
         console.log(e);
       }
-    });
+    });  
 }
 
 function baseMenu() {
@@ -64,16 +78,16 @@ function baseMenu() {
         name: 'menu',
         type: 'list',
         message: 'Welcome! Please pick an option. . .',
-        choices: ['create a post', 'read somthing'],
+        choices: ['Create a post', 'Read something'],
       },
     ])
 
     .then((answer) => {
       // console.log(answer.menu);
-      if (answer.menu === 'create a post') {
-        createBlog();
+      if (answer.menu === 'Create a post') {
+        createBlogPost();
       }
-      if (answer.menu === 'read somthing') {
+      if (answer.menu === 'Read something') {
         // console.log("---------", answer.selectedPost);
         selectPostedBlog();
       }
@@ -97,10 +111,25 @@ function selectPostedBlog() {
     .then((answers) => {
       const selectedPost = answers.selectedPost;
       console.log(`You selected: ${selectedPost}`);
+      Post.findOne({title: selectedPost})
+        .then((result)=> {
+          console.log(result.body);
+        });
     })
+
+
     .catch((error) => {
       console.error('Error fetching data', error);
     });
 }
 
-signIn();
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function startWait() {
+  startServer();
+  await wait(2000);
+  signIn();
+}
+startWait();
