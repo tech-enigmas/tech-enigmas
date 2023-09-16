@@ -3,13 +3,15 @@ const mongoose = require('mongoose');
 const Post = require('../auth/schema-models/post');
 require('dotenv').config();
 
-mongoose.connect(process.env.MONGODB_URL);
 
-const db = mongoose.connection;
+function startServer() {
+  mongoose.connect(process.env.MONGODB_URL);
 
-db.on('error', console.error.bind(console, 'Connection error'));
-db.once('open', () => console.log('Mongoose is connected'));
+  const db = mongoose.connection;
 
+  db.on('error', console.error.bind(console, 'Connection error'));
+  db.once('open', () => console.log('Mongoose is connected'));
+}
 function signIn() {
   inquirer
     .prompt([
@@ -20,11 +22,10 @@ function signIn() {
       },
     ])
 
-    .then((answer) => {
+    .then(async (answer) => {
       console.log(`Hello ${answer.user_name}. What would you like to do?`);
-
+      await wait(2000);
       baseMenu();
-    
     });
 }
 function createBlog() {
@@ -97,10 +98,22 @@ function selectPostedBlog() {
     .then((answers) => {
       const selectedPost = answers.selectedPost;
       console.log(`You selected: ${selectedPost}`);
+      console.log(answers.map(post => post.title));
+      return answers.map(post => post.title)
     })
     .catch((error) => {
       console.error('Error fetching data', error);
     });
 }
 
-signIn();
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function startWait() {
+  startServer();
+  await wait(2000);
+  signIn();
+}
+startWait();
