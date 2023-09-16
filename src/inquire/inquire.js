@@ -35,6 +35,7 @@ function signIn() {
 }
 
 const BlogPosts = mongoose.model('BlogPost', blogPostSchema);
+
 function createBlogPost() {
   inquirer
     .prompt([
@@ -42,6 +43,11 @@ function createBlogPost() {
         type: 'input',
         name: 'blog_title',
         message: 'What is the name of your blog?',
+      },
+      {
+        type: 'input',
+        name: 'blog_author',
+        message: 'Name of Author?',
       },
       {
         type: 'input',
@@ -59,7 +65,7 @@ function createBlogPost() {
           body: answer.blog_body,
           id: 100,
           status: true,
-          userId: 100,
+          author: answer.blog_author,
           keyWord: [],
           likes: 1000,
           comments: [],
@@ -86,7 +92,12 @@ function baseMenu() {
         name: 'menu',
         type: 'list',
         message: 'Welcome! Please pick an option. . .',
-        choices: ['Create a post', 'Read something', 'Delete post'],
+        choices: [
+          'Create a post',
+          'Read something',
+          'Delete post',
+          'Edit post',
+        ],
       },
     ])
 
@@ -100,6 +111,9 @@ function baseMenu() {
       if (answer.menu === 'Delete post') {
         deleteBlogPost();
       }
+      if (answer.menu === 'Edit post') {
+        editBlogPost();
+      }
     });
 }
 
@@ -107,7 +121,7 @@ function selectPostedBlog() {
   Post.find()
     .exec()
     .then((posts) => {
-      console.log(posts);
+      // console.log(posts);
       const blogPosts = {
         type: 'list',
         name: 'selectedPost',
@@ -117,14 +131,17 @@ function selectPostedBlog() {
 
       return inquirer.prompt([blogPosts]);
     })
-    .then((answers) => {
+    .then( async (answers) => {
       const selectedPost = answers.selectedPost;
       console.log(`You selected: ${selectedPost}`);
       Post.findOne({ title: selectedPost }).then((result) => {
         console.log(result.body);
+        console.log('Author:', result.author);
       });
+      await wait(1500);
+      baseMenu();
     })
-
+    
     .catch((error) => {
       console.error('Error fetching data', error);
     });
@@ -165,31 +182,62 @@ function deleteBlogPost() {
       console.error('Error fetching post titles', error);
     });
 }
-// inquirer
-//   .prompt([
-//     {
-//       type: 'input',
-//       name: 'post_title',
-//       message: 'Select the title of the post you want to delete:',
-//     },
-//   ])
-//   .then(async (answer) => {
-//     try {
-//       const postToDelete = await Post.findOneAndDelete({
-//         title: answer.post_title,
-//       });
-//       if (postToDelete) {
-//         console.log(`Post '${postToDelete.title}' has been deleted.`);
-//       } else {
-//         console.log(`No post found with title '${answer.post_title}'.`);
-//       }
-//       await wait(1500);
-//       baseMenu(); // Return to the main menu
-//     } catch (e) {
-//       console.error('Error:', e);
-//     }
-//   });
-// }
+
+function editBlogPost() {
+  // Fetch a list of post titles from the database
+  BlogPosts.find()
+    .exec()
+    .then((posts) => {
+      console.log(posts);
+      const editPost = posts.map((post) => post.title || 'no title available');
+      inquirer
+        .prompt([
+          {
+            type: 'list',
+            name: 'post_title',
+            message: 'Select a post to edit:',
+            choices: editPost,
+          },
+        ])
+        .then(async (answer) => {
+          try {
+            const selectedTitle = answer.post_title;
+            // Find the selected post by its title
+            const selectedPost = await BlogPosts.findOne({
+              title: selectedTitle,
+            });
+            if (!selectedPost) {
+              console.log(`No post found with title '${selectedTitle}'.`);
+              await wait(1500);
+              baseMenu(); // Return to the main menu
+              return;
+            }
+            // Prompt the user to edit the post's body
+            const editAnswers = await inquirer.prompt([
+              {
+                type: 'input',
+                name: 'editedBody',
+                message: 'Edit the post body:',
+                default: selectedPost.body,
+              },
+            ]);
+            // Update the selected post with the edited body
+            selectedPost.body = editAnswers.editedBody;
+            // Save the updated post
+            await selectedPost.save();
+            console.log(`Post '${selectedTitle}' has been edited.`);
+            await wait(1500);
+            baseMenu(); // Return to the main menu
+          } catch (e) {
+            console.error('Error:', e);
+          }
+        });
+    })
+    .catch((error) => {
+      console.error('Error fetching post titles', error);
+    });
+}
+
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
