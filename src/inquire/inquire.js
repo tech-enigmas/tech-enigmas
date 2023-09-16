@@ -4,6 +4,11 @@ const Post = require('../auth/schema-models/post');
 require('dotenv').config();
 
 
+const blogPostSchema = new mongoose.Schema({
+  title: String,
+  body: String,
+});
+
 function startServer() {
   mongoose.connect(process.env.MONGODB_URL);
 
@@ -12,6 +17,7 @@ function startServer() {
   db.on('error', console.error.bind(console, 'Connection error'));
   db.once('open', () => console.log('Mongoose is connected'));
 }
+
 function signIn() {
   inquirer
     .prompt([
@@ -24,14 +30,11 @@ function signIn() {
 
     .then(async (answer) => {
       console.log(`Hello ${answer.user_name}. What would you like to do?`);
-      await wait(2000);
+      await wait(1500);
       baseMenu();
     });
 }
-const blogPostSchema = new mongoose.Schema({
-  title: String,
-  body: String,
-});
+
 const BlogPosts = mongoose.model('BlogPost', blogPostSchema);
 function createBlogPost() {
   inquirer
@@ -47,7 +50,7 @@ function createBlogPost() {
         message: 'What is your blog about?',
       },
     ])
-    .then((answer) => {
+    .then(async(answer) => {
       if(!answer.blog_body || !answer.blog_title){
         return;
       }
@@ -65,6 +68,8 @@ function createBlogPost() {
         // const newAnswer = new Post({ body: answer.blog_post });
         blogPost.save().then((result) => console.log(`Blog post ${result.title} was added successfully`));
         // console.info('Answer:', answer.blog_title);
+        await wait(1500);
+        baseMenu();
       } catch (e) {
         console.log(e);
       }
@@ -83,12 +88,10 @@ function baseMenu() {
     ])
 
     .then((answer) => {
-      // console.log(answer.menu);
       if (answer.menu === 'Create a post') {
         createBlogPost();
       }
       if (answer.menu === 'Read something') {
-        // console.log("---------", answer.selectedPost);
         selectPostedBlog();
       }
     });
@@ -129,7 +132,7 @@ function wait(ms) {
 
 async function startWait() {
   startServer();
-  await wait(2000);
+  await wait(1500);
   signIn();
 }
 startWait();
