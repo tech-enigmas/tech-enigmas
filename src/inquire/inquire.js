@@ -106,7 +106,7 @@ function baseMenu() {
         createBlogPost();
       }
       if (answer.menu === 'Read something') {
-        selectPostedBlog();
+        viewByTitleOrAuthor();
       }
       if (answer.menu === 'Delete post') {
         deleteBlogPost();
@@ -117,16 +117,17 @@ function baseMenu() {
     });
 }
 
-function selectPostedBlog() {
+function viewByTitle() {
   Post.find()
     .exec()
     .then((posts) => {
+      const postTitles = posts.map((post) => post.title);
       // console.log(posts);
       const blogPosts = {
         type: 'list',
         name: 'selectedPost',
         message: 'Select a post',
-        choices: posts.map((post) => post.title),
+        choices: postTitles,
       };
 
       return inquirer.prompt([blogPosts]);
@@ -140,6 +141,40 @@ function selectPostedBlog() {
       });
       await wait(1500);
       baseMenu();
+    })
+    
+    .catch((error) => {
+      console.error('Error fetching data', error);
+    });
+}
+
+function viewByAuthor() {
+  Post.find()
+    .exec()
+    .then((posts) => {
+      // console.log(posts);
+      const postAuthors = posts.map((post) => post.author) || 'nothing available';
+      // console.log(posts);
+      const blogPosts = {
+        type: 'list',
+        name: 'selectedAuthor',
+        message: 'Select a post',
+        choices: postAuthors,
+      };
+
+      return inquirer.prompt([blogPosts]);
+    })
+    .then( async (answers) => {
+      const selectedPost = answers.selectedAuthor;
+      // console.log(`You selected: ${selectedAuthor}`);
+      
+      Post.findOne({ author: selectedPost }).then((result) => {
+        console.log('Author:', result.author);
+        console.log('Title:', result.title);
+        console.log(result.body);
+      });
+      // await wait(1500);
+      // baseMenu();
     })
     
     .catch((error) => {
@@ -241,6 +276,31 @@ function editBlogPost() {
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function viewByTitleOrAuthor() {
+  inquirer
+    .prompt([
+      {
+        name: 'menu',
+        type: 'list',
+        message: 'Would you like to view by Title or Author?',
+        choices: [
+          'View by Title',
+          'View by Author',
+        ],
+      },
+    ])
+
+    .then((answer) => {
+      if (answer.menu === 'View by Title') {
+        viewByTitle();
+      }
+      if (answer.menu === 'View by Author') {
+        viewByAuthor();
+      }
+ 
+    });
 }
 
 async function startWait() {
