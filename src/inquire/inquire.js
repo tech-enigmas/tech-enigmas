@@ -117,12 +117,13 @@ function baseMenu() {
     });
 }
 
+
 function viewByTitle() {
   Post.find()
     .exec()
     .then((posts) => {
       const postTitles = posts.map((post) => post.title);
-      // console.log(posts);
+
       const blogPosts = {
         type: 'list',
         name: 'selectedPost',
@@ -130,22 +131,74 @@ function viewByTitle() {
         choices: postTitles,
       };
 
-      return inquirer.prompt([blogPosts]);
+      inquirer
+        .prompt([blogPosts])
+        .then(async (answers) => {
+          const selectedPost = answers.selectedPost;
+          console.log(`You selected: ${selectedPost}`);
+          Post.findOne({ title: selectedPost }).then((result) => {
+            console.log(result.body);
+            console.log('Author:', result.author);
+
+            // Function to like and comment on the blog post
+            function viewBlogPost() {
+              inquirer
+                .prompt([
+                  {
+                    type: 'list',
+                    name: 'action',
+                    message: 'What would you like to do?',
+                    choices: [
+                      'Like this post',
+                      'Add a comment',
+                      'Go back to the main menu',
+                    ],
+                  },
+                ])
+                .then(async (answer) => {
+                  if (answer.action === 'Like this post') {
+                    await Post.updateOne(
+                      { title: selectedPost },
+                      { $inc: { likes: 1 } }
+                    );
+                    console.log('You liked this post!');
+                  } else if (answer.action === 'Add a comment') {
+                    const commentAnswer = await inquirer.prompt([
+                      {
+                        type: 'input',
+                        name: 'comment',
+                        message: 'Enter your comment:',
+                      },
+                    ]);
+                    await Post.updateOne(
+                      { title: selectedPost },
+                      { $push: { comments: commentAnswer.comment } }
+                    );
+                    console.log('Your comment has been added!');
+                  }
+
+                  await wait(1500);
+                  baseMenu();
+                })
+                .catch((error) => {
+                  console.error('Error:', error);
+                });
+            }
+
+            viewBlogPost();
+          });
+
+  
+        })
+        .catch((error) => {
+          console.error('Error fetching data', error);
+        });
     })
-    .then( async (answers) => {
-      const selectedPost = answers.selectedPost;
-      console.log(`You selected: ${selectedPost}`);
-      Post.findOne({ title: selectedPost }).then((result) => {
-        console.log(result.body);
-        console.log('Author:', result.author);
-      });
-      goBack();
-    })
-    
     .catch((error) => {
-      console.error('Error fetching data', error);
+      console.error('Error fetching post titles', error);
     });
 }
+
 
 function viewByAuthor() {
   Post.find()
