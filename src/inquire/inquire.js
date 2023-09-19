@@ -105,7 +105,7 @@ function baseMenu() {
       if (answer.menu === 'Create a post') {
         createBlogPost();
       }
-      if (answer.menu === 'Read something') {
+      if (answer.menu === 'Read a post') {
         viewByTitleOrAuthor();
       }
       if (answer.menu === 'Delete post') {
@@ -139,7 +139,7 @@ function viewByTitle() {
         console.log(result.body);
         console.log('Author:', result.author);
       });
-      goBack()
+      goBack();
     })
     
     .catch((error) => {
@@ -172,7 +172,7 @@ function viewByAuthor() {
         console.log('Title:', result.title);
         console.log(result.body);
       });
-      goBack()
+      goBack();
     })
     
     .catch((error) => {
@@ -308,15 +308,15 @@ async function startWait() {
 }
 
 function goBack() {
+  inquirer;
   inquirer
-  inquirer
-  .prompt([
-    {
-      name: "back",
-      type: "confirm",
-      message: "go back to main menu?",
-    },
-  ])
+    .prompt([
+      {
+        name: 'back',
+        type: 'confirm',
+        message: 'go back to main menu?',
+      },
+    ])
 
     .then((answer) => {
       console.log(answer.back);
