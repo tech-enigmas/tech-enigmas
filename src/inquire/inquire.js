@@ -139,8 +139,7 @@ function viewByTitle() {
         console.log(result.body);
         console.log('Author:', result.author);
       });
-      await wait(1500);
-      baseMenu();
+      goBack()
     })
     
     .catch((error) => {
@@ -173,8 +172,7 @@ function viewByAuthor() {
         console.log('Title:', result.title);
         console.log(result.body);
       });
-      // await wait(1500);
-      // baseMenu();
+      goBack()
     })
     
     .catch((error) => {
@@ -308,4 +306,22 @@ async function startWait() {
   await wait(1500);
   signIn();
 }
+
+function goBack() {
+  inquirer
+  inquirer
+  .prompt([
+    {
+      name: "back",
+      type: "confirm",
+      message: "go back to main menu?",
+    },
+  ])
+
+    .then((answer) => {
+      console.log(answer.back);
+      baseMenu();
+    });
+}
+
 startWait();
