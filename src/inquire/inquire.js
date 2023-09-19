@@ -94,7 +94,7 @@ function baseMenu() {
         message: 'Welcome! Please pick an option. . .',
         choices: [
           'Create a post',
-          'Read something',
+          'Read a post',
           'Delete post',
           'Edit post',
         ],
@@ -190,7 +190,7 @@ function deleteBlogPost() {
       inquirer
         .prompt([
           {
-            type: 'list',
+            type: 'checkbox',
             name: 'post_title',
             message: 'Select a post to delete:',
             choices: postTitles,
