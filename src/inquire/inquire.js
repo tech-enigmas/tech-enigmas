@@ -205,7 +205,7 @@ function deleteBlogPost() {
               console.log(`No post found with title '${answer.post_title}'.`);
             }
             await wait(1500);
-            baseMenu(); // Return to the main menu
+            baseMenu(); 
           } catch (e) {
             console.error('Error:', e);
           }
@@ -217,11 +217,10 @@ function deleteBlogPost() {
 }
 
 function editBlogPost() {
-  // Fetch a list of post titles from the database
-  BlogPosts.find()
+  Post.find()
     .exec()
     .then((posts) => {
-      console.log(posts);
+      // console.log(posts);
       const editPost = posts.map((post) => post.title || 'no title available');
       inquirer
         .prompt([
@@ -235,17 +234,16 @@ function editBlogPost() {
         .then(async (answer) => {
           try {
             const selectedTitle = answer.post_title;
-            // Find the selected post by its title
-            const selectedPost = await BlogPosts.findOne({
+            const selectedPost = await Post.findOne({
               title: selectedTitle,
             });
             if (!selectedPost) {
               console.log(`No post found with title '${selectedTitle}'.`);
               await wait(1500);
-              baseMenu(); // Return to the main menu
+              baseMenu(); 
               return;
             }
-            // Prompt the user to edit the post's body
+          
             const editAnswers = await inquirer.prompt([
               {
                 type: 'input',
@@ -254,13 +252,12 @@ function editBlogPost() {
                 default: selectedPost.body,
               },
             ]);
-            // Update the selected post with the edited body
             selectedPost.body = editAnswers.editedBody;
-            // Save the updated post
+          
             await selectedPost.save();
             console.log(`Post '${selectedTitle}' has been edited.`);
             await wait(1500);
-            baseMenu(); // Return to the main menu
+            baseMenu(); 
           } catch (e) {
             console.error('Error:', e);
           }
@@ -314,7 +311,7 @@ function goBack() {
       {
         name: 'back',
         type: 'confirm',
-        message: 'go back to main menu?',
+        message: 'Go back to main menu?',
       },
     ])
 
