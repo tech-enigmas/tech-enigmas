@@ -242,10 +242,13 @@ function deleteBlogPost() {
             type: 'checkbox',
             name: 'post_title',
             message: 'Select a post to delete:',
-            choices: postTitles,
+            choices: ['Return to main menu', ...postTitles],
           },
         ])
         .then(async (answer) => {
+          if(answer.post_title === 'Return to main menu') {
+            baseMenu();
+          }
           try {
             const postToDelete = await Post.findOneAndDelete({
               title: answer.post_title,
@@ -268,10 +271,10 @@ function deleteBlogPost() {
 }
 
 function editBlogPost() {
+
   Post.find()
     .exec()
     .then((posts) => {
-      // console.log(posts);
       const editPost = posts.map((post) => post.title || 'no title available');
       inquirer
         .prompt([
@@ -279,15 +282,19 @@ function editBlogPost() {
             type: 'list',
             name: 'post_title',
             message: 'Select a post to edit:',
-            choices: editPost,
+            choices: ['Return to main menu', ...editPost],
           },
         ])
         .then(async (answer) => {
           try {
+            if(answer.post_title === 'Return to main menu') {
+              baseMenu();
+            }
             const selectedTitle = answer.post_title;
             const selectedPost = await Post.findOne({
               title: selectedTitle,
             });
+               
             if (!selectedPost) {
               console.log(`No post found with title '${selectedTitle}'.`);
               await wait(1500);
