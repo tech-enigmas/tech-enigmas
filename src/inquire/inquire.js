@@ -139,52 +139,6 @@ function viewByTitle() {
           Post.findOne({ title: selectedPost }).then((result) => {
             console.log(result.body);
             console.log('Author:', result.author);
-
-            // Function to like and comment on the blog post
-            function viewBlogPost() {
-              inquirer
-                .prompt([
-                  {
-                    type: 'list',
-                    name: 'action',
-                    message: 'What would you like to do?',
-                    choices: [
-                      'Like this post',
-                      'Add a comment',
-                      'Go back to the main menu',
-                    ],
-                  },
-                ])
-                .then(async (answer) => {
-                  if (answer.action === 'Like this post') {
-                    await Post.updateOne(
-                      { title: selectedPost },
-                      { $inc: { likes: 1 } }
-                    );
-                    console.log('You liked this post!');
-                  } else if (answer.action === 'Add a comment') {
-                    const commentAnswer = await inquirer.prompt([
-                      {
-                        type: 'input',
-                        name: 'comment',
-                        message: 'Enter your comment:',
-                      },
-                    ]);
-                    await Post.updateOne(
-                      { title: selectedPost },
-                      { $push: { comments: commentAnswer.comment } }
-                    );
-                    console.log('Your comment has been added!');
-                  }
-
-                  await wait(1500);
-                  baseMenu();
-                })
-                .catch((error) => {
-                  console.error('Error:', error);
-                });
-            }
-
             viewBlogPost();
           });
 
@@ -224,12 +178,56 @@ function viewByAuthor() {
         console.log('Author:', result.author);
         console.log('Title:', result.title);
         console.log(result.body);
+        viewBlogPost()
       });
-      goBack();
     })
     
     .catch((error) => {
       console.error('Error fetching data', error);
+    });
+}
+
+function viewBlogPost() {
+  inquirer
+    .prompt([
+      {
+        type: 'list',
+        name: 'action',
+        message: 'What would you like to do?',
+        choices: [
+          'Like this post',
+          'Add a comment',
+          'Go back to the main menu',
+        ],
+      },
+    ])
+    .then(async (answer) => {
+      if (answer.action === 'Like this post') {
+        await Post.updateOne(
+          { title: selectedPost },
+          { $inc: { likes: 1 } }
+        );
+        console.log('You liked this post!');
+      } else if (answer.action === 'Add a comment') {
+        const commentAnswer = await inquirer.prompt([
+          {
+            type: 'input',
+            name: 'comment',
+            message: 'Enter your comment:',
+          },
+        ]);
+        await Post.updateOne(
+          { title: selectedPost },
+          { $push: { comments: commentAnswer.comment } }
+        );
+        console.log('Your comment has been added!');
+      }
+
+      await wait(1500);
+      baseMenu();
+    })
+    .catch((error) => {
+      console.error('Error:', error);
     });
 }
 
@@ -355,23 +353,6 @@ async function startWait() {
   startServer();
   await wait(1500);
   signIn();
-}
-
-function goBack() {
-  inquirer;
-  inquirer
-    .prompt([
-      {
-        name: 'back',
-        type: 'confirm',
-        message: 'Go back to main menu?',
-      },
-    ])
-
-    .then((answer) => {
-      console.log(answer.back);
-      baseMenu();
-    });
 }
 
 startWait();
