@@ -359,3 +359,7 @@ async function startWait() {
 }
 
 startWait();
+
+module.exports = {
+  editBlogPost
+};
