@@ -1,8 +1,10 @@
 const inquirer = require('inquirer');
 const mongoose = require('mongoose');
 const Post = require('../auth/schema-models/post');
+const chalkAnimation = require('chalk-animation');
+const chalk = require('chalk');
 require('dotenv').config();
-
+console.log(chalkAnimation);
 const blogPostSchema = new mongoose.Schema({
   title: String,
   body: String,
@@ -28,8 +30,10 @@ function signIn() {
     ])
 
     .then(async (answer) => {
-      console.log(`Hello ${answer.user_name}. What would you like to do?`);
+      const greetingAnimation = chalkAnimation.rainbow(`Hello ${answer.user_name}. What would you like to do?`);
       await wait(1500);
+
+      greetingAnimation.stop();
       baseMenu();
     });
 }
@@ -135,10 +139,10 @@ function viewByTitle() {
         .prompt([blogPosts])
         .then(async (answers) => {
           const selectedPost = answers.selectedPost;
-          console.log(`You selected: ${selectedPost}`);
+          console.log(chalk.bold.blueBright(`You selected: ${selectedPost}`));
           Post.findOne({ title: selectedPost }).then((result) => {
             console.log(result.body);
-            console.log('Author:', result.author);
+            console.log(chalk.bold.greenBright('Author:', result.author));
             viewBlogPost();
           });
 
@@ -175,10 +179,10 @@ function viewByAuthor() {
       // console.log(`You selected: ${selectedAuthor}`);
       
       Post.findOne({ author: selectedPost }).then((result) => {
-        console.log('Author:', result.author);
-        console.log('Title:', result.title);
+        console.log(chalk.bold.greenBright('Author:', result.author));
+        console.log(chalk.bold.blueBright('Title:', result.title));
         console.log(result.body);
-        viewBlogPost()
+        viewBlogPost();
       });
     })
     
@@ -198,16 +202,18 @@ function viewBlogPost() {
           'Like this post',
           'Add a comment',
           'Go back to the main menu',
+          
         ],
       },
+
     ])
     .then(async (answer) => {
       if (answer.action === 'Like this post') {
         await Post.updateOne(
-          { title: selectedPost },
+          { title: answer.selectedPost },
           { $inc: { likes: 1 } }
         );
-        console.log('You liked this post!');
+        console.log(chalk.bold.magentaBright('You liked this post!'));
       } else if (answer.action === 'Add a comment') {
         const commentAnswer = await inquirer.prompt([
           {
@@ -217,7 +223,7 @@ function viewBlogPost() {
           },
         ]);
         await Post.updateOne(
-          { title: selectedPost },
+          { title: answer.selectedPost },
           { $push: { comments: commentAnswer.comment } }
         );
         console.log('Your comment has been added!');
@@ -246,7 +252,8 @@ function deleteBlogPost() {
           },
         ])
         .then(async (answer) => {
-          if(answer.post_title === 'Return to main menu') {
+          // log(chalk.blue.bgRed.bold('Hello world!'));
+          if (answer.post_title === 'Return to main menu') {
             baseMenu();
           }
           try {
@@ -259,7 +266,7 @@ function deleteBlogPost() {
               console.log(`No post found with title '${answer.post_title}'.`);
             }
             await wait(1500);
-            baseMenu(); 
+            baseMenu();
           } catch (e) {
             console.error('Error:', e);
           }
@@ -289,6 +296,7 @@ function editBlogPost() {
           try {
             if(answer.post_title === 'Return to main menu') {
               baseMenu();
+              console.log(chalk.bold.redBright('Return to main menu'));
             }
             const selectedTitle = answer.post_title;
             const selectedPost = await Post.findOne({
