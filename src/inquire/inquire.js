@@ -70,13 +70,11 @@ function createBlogPost() {
           likes: 1000,
           comments: [],
         });
-        // const newAnswer = new Post({ body: answer.blog_post });
         blogPost
           .save()
           .then((result) =>
             console.log(`Blog post ${result.title} was added successfully`)
           );
-        // console.info('Answer:', answer.blog_title);
         await wait(1500);
         baseMenu();
       } catch (e) {
@@ -158,9 +156,7 @@ function viewByAuthor() {
   Post.find()
     .exec()
     .then((posts) => {
-      // console.log(posts);
       const postAuthors = posts.map((post) => post.author) || 'nothing available';
-      // console.log(posts);
       const blogPosts = {
         type: 'list',
         name: 'selectedAuthor',
@@ -171,8 +167,8 @@ function viewByAuthor() {
       return inquirer.prompt([blogPosts]);
     })
     .then( async (answers) => {
+
       const selectedPost = answers.selectedAuthor;
-      // console.log(`You selected: ${selectedAuthor}`);
       
       Post.findOne({ author: selectedPost }).then((result) => {
         console.log('Author:', result.author);
