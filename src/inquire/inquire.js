@@ -200,7 +200,7 @@ function viewBlogPost() {
     .then(async (answer) => {
       if (answer.action === 'Like this post') {
         await Post.updateOne(
-          { title: selectedPost },
+          { title: answer.selectedPost },
           { $inc: { likes: 1 } }
         );
         console.log('You liked this post!');
@@ -213,7 +213,7 @@ function viewBlogPost() {
           },
         ]);
         await Post.updateOne(
-          { title: selectedPost },
+          { title: answer.selectedPost },
           { $push: { comments: commentAnswer.comment } }
         );
         console.log('Your comment has been added!');
