@@ -4,7 +4,6 @@ const Post = require('../auth/schema-models/post');
 const chalkAnimation = require('chalk-animation');
 const chalk = require('chalk');
 require('dotenv').config();
-console.log(chalkAnimation);
 const blogPostSchema = new mongoose.Schema({
   title: String,
   body: String,
