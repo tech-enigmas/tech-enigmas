@@ -8,7 +8,7 @@ const postSchema = new Schema ({
   body: String,
   id: Number,
   status: Boolean,
-  userId: Number,
+  author: String,
   keyWord: [String],
   likes: Number,
   comments: [],

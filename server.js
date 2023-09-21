@@ -6,6 +6,7 @@ const { default: mongoose } = require('mongoose');
 const postHandler = require('./src/auth/modules/postHandler');
 const userHandler = require('./src/auth/modules/userHandler');
 
+
 const app = express();
 app.use(express.json());
 
@@ -33,4 +34,3 @@ db.once('open', () => console.log('Mongoose is connected'));
 
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
-
