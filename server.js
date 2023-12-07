@@ -2,12 +2,17 @@
 
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const { default: mongoose } = require('mongoose');
 const postHandler = require('./src/auth/modules/postHandler');
 const userHandler = require('./src/auth/modules/userHandler');
+const getCamping = require('./src/auth/modules/campingHandler');
+const airbnb = require('./modules/airbnb');
+const travelRoutes = require('./src/auth/modules/travelRoutesHandler');
 
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.get('/users', userHandler.getUser);
@@ -29,8 +34,20 @@ mongoose.connect(process.env.MONGODB_URL);
 
 const db = mongoose.connection;
 
+app.get('/airbnb', airbnb);
+app.get('/camping', getCamping);
+
+app.get('/travel-routes', travelRoutes.getTravelRoutes);
+app.get('/travel-routes/:id', travelRoutes.getOneTravelRoute);
+app.post('/travel-routes', travelRoutes.addTravelRoute);
+app.patch('/travel-routes/:id', travelRoutes.editTravelRoute);
+app.delete('/travel-routes/:id', travelRoutes.deleteTravelRoute);
+
 db.on('error', console.error.bind(console, 'Connection error'));
 db.once('open', () => console.log('Mongoose is connected'));
 
+app.use((error, req, res, next) => {
+  res.status(500).send(error.message);
+});
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
