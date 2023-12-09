@@ -4,23 +4,36 @@ const Post = require('../schema-models/post');
 
 const postHandler = {};
 
-postHandler.getPost = function(req, res) {
-  let queryObject = {title: req.user.title};
-
-  Post.find(queryObject)
-    .then(data => res.status(200).send(data))
-    .catch(err => console.error(err));
+postHandler.getPost = function (req, res) {
+  console.log('getPostHandler');
+  let queryObject = '';
+  if (req.query?.title)
+    queryObject = { title: req.query?.title };
+  if (queryObject)
+    Post.find(queryObject)
+      .then(data => res.status(200).send(data))
+      .catch(err => console.error(err));
+  else {
+    console.log('looking with no query');
+    Post.find()
+      .then(data => res.status(200).send(data))
+      .catch(err => console.error(err));
+  }
 };
 
-postHandler.createPost = function(req, res, next) {
+postHandler.createPost = function (req, res, next) {
   const data = req.body;
+  console.log(data);
   Post.create(data)
-    .then(createdPost => res.status(200).send(createdPost))
+    .then(createdPost => {
+      console.log(createdPost);
+      res.status(200).send(createdPost)
+    })
     .catch(err => next(err));
 };
 
-postHandler.deletePost = function(req, res, next) {
-  const {id} = req.params;
+postHandler.deletePost = function (req, res, next) {
+  const { id } = req.params;
   console.log(id);
   Post.findByIdAndDelete(id)
     .then(deletedPost => res.status(200).send(deletedPost))
@@ -28,8 +41,8 @@ postHandler.deletePost = function(req, res, next) {
 
 };
 
-postHandler.updatePost = function(req, res, next){
-  const {id} = req.params;
+postHandler.updatePost = function (req, res, next) {
+  const { id } = req.params;
   Post.findByIdAndUpdate(id)
     .then(updatedPost => res.status(200).send(updatedPost))
     .catch(err => next(err));
