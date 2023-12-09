@@ -7,7 +7,8 @@ const { default: mongoose } = require('mongoose');
 const postHandler = require('./src/auth/modules/postHandler');
 const userHandler = require('./src/auth/modules/userHandler');
 const getCamping = require('./src/auth/modules/campingHandler');
-const airbnb = require('./src/auth/modules/airbnbHandler');
+
+const getAirbnb = require('./src/auth/modules/airbnbHandler');
 const travelRoutes = require('./src/auth/modules/travelRoutesHandler');
 
 
@@ -34,7 +35,7 @@ mongoose.connect(process.env.MONGODB_URL);
 
 const db = mongoose.connection;
 
-app.get('/airbnb', airbnb);
+app.get('/airbnb', getAirbnb);
 app.get('/camping', getCamping);
 
 app.get('/travel-routes', travelRoutes.getTravelRoutes);
