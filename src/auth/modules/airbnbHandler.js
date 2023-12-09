@@ -68,7 +68,8 @@ const options = {
     currency: 'USD'
   },
   headers: {
-    'X-RapidAPI-Key': AIRBNB_API_KEY,
+
+    'X-RapidAPI-Key': 'AIRBNB_API_KEY',
     'X-RapidAPI-Host': 'airbnb13.p.rapidapi.com'
   }
 };
