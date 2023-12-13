@@ -4,17 +4,26 @@ const TravelRoute = require('../schema-models/travelRoutes');
 const travelRoutes = {};
 
 travelRoutes.getTravelRoutes = async function (req, res, next) {
-  let searchQuery = {email: req.user.email};
-  try {
-    const allRoutes = await TravelRoute.find(searchQuery);
-    if(allRoutes.length > 0) {
-      res.status(200).json(allRoutes);
-    } else {
-      res.status(404).send('user not found');
-    }
-  } catch (err) {
-    next(err);
+  let queryObject = {};
+
+  if(req.query.location){
+    queryObject = {location: req.query.location};
   }
+
+  TravelRoute.find(queryObject)
+    .then(data => res.status(200).send(data))
+    .catch(error => console.error(error));
+  // let searchQuery = {email: req.user.email};
+  // try {
+  //   const allRoutes = await TravelRoute.find(searchQuery);
+  //   if(allRoutes.length > 0) {
+  //     res.status(200).json(allRoutes);
+  //   } else {
+  //     res.status(404).send('user not found');
+  //   }
+  // } catch (err) {
+  //   next(err);
+  // }
 };
 
 travelRoutes.getOneTravelRoute = async function(req, res, next) {
@@ -29,7 +38,7 @@ travelRoutes.getOneTravelRoute = async function(req, res, next) {
 
 travelRoutes.addTravelRoute = async function(req, res, next) {
   const data = req.body;
-  data.email = req.user.email;
+  // data.email = req.user.email;
   try {
     const newRoute = await TravelRoute.create(data);
     res.status(201).json(newRoute);
