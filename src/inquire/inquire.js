@@ -143,7 +143,7 @@ function viewByTitle() {
             viewBlogPost();
           });
 
-  
+
         })
         .catch((error) => {
           console.error('Error fetching data', error);
@@ -169,10 +169,10 @@ function viewByAuthor() {
 
       return inquirer.prompt([blogPosts]);
     })
-    .then( async (answers) => {
+    .then(async (answers) => {
 
       const selectedPost = answers.selectedAuthor;
-      
+
       Post.findOne({ author: selectedPost }).then((result) => {
         console.log(chalk.bold.greenBright('Author:', result.author));
         console.log(chalk.bold.blueBright('Title:', result.title));
@@ -180,7 +180,7 @@ function viewByAuthor() {
         viewBlogPost();
       });
     })
-    
+
     .catch((error) => {
       console.error('Error fetching data', error);
     });
@@ -197,7 +197,7 @@ function viewBlogPost() {
           'Like this post',
           'Add a comment',
           'Go back to the main menu',
-          
+
         ],
       },
 
@@ -289,7 +289,7 @@ function editBlogPost() {
         ])
         .then(async (answer) => {
           try {
-            if(answer.post_title === 'Return to main menu') {
+            if (answer.post_title === 'Return to main menu') {
               baseMenu();
               console.log(chalk.bold.redBright('Return to main menu'));
             }
@@ -297,14 +297,14 @@ function editBlogPost() {
             const selectedPost = await Post.findOne({
               title: selectedTitle,
             });
-               
+
             if (!selectedPost) {
               console.log(`No post found with title '${selectedTitle}'.`);
               await wait(1500);
-              baseMenu(); 
+              baseMenu();
               return;
             }
-          
+
             const editAnswers = await inquirer.prompt([
               {
                 type: 'input',
@@ -314,11 +314,11 @@ function editBlogPost() {
               },
             ]);
             selectedPost.body = editAnswers.editedBody;
-          
+
             await selectedPost.save();
             console.log(`Post '${selectedTitle}' has been edited.`);
             await wait(1500);
-            baseMenu(); 
+            baseMenu();
           } catch (e) {
             console.error('Error:', e);
           }
@@ -355,7 +355,7 @@ function viewByTitleOrAuthor() {
       if (answer.menu === 'View by Author') {
         viewByAuthor();
       }
- 
+
     });
 }
 

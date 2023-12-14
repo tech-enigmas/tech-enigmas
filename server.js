@@ -7,7 +7,7 @@ const { default: mongoose } = require('mongoose');
 const postHandler = require('./src/auth/modules/postHandler');
 const userHandler = require('./src/auth/modules/userHandler');
 const getCamping = require('./src/auth/modules/campingHandler');
-const getAirbnb = require('./src/auth/modules/airbnbHandler');
+const getAirbnb = require('./src/auth/modules/airbnbModule');
 const travelRoutes = require('./src/auth/modules/travelRoutesHandler');
 
 
