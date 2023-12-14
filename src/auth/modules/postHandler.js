@@ -12,12 +12,18 @@ postHandler.getPost = function (req, res) {
   if (queryObject)
     Post.find(queryObject)
       .then(data => res.status(200).send(data))
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error('Error in Post.find(queryObject):', err);
+        res.status(500).send({ error: 'Internal Server Error' });
+      });
   else {
     console.log('looking with no query');
     Post.find()
       .then(data => res.status(200).send(data))
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error('Error in Post.find():', err);
+        res.status(500).send({ error: 'Internal Server Error' });
+      });
   }
 };
 
