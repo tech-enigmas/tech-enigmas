@@ -120,4 +120,4 @@ module.exports = getAirbnb;
 //   } catch (err) {
 //     next(err);
 //   }
->>>>>>> daf7be65adb7bb1444437df0130045116e15d489:src/auth/modules/airbnbModule.js
+
