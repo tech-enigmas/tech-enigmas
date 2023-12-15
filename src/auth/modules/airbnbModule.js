@@ -9,40 +9,40 @@ async function getAirbnb(req, res, next) {
   const { location, checkin, checkout, adults, children, pets } = req.query;
   const key = 'airbnb' + location;
 
- 
- 
 
-const options = {
-  method: 'GET',
-  url: 'https://airbnb13.p.rapidapi.com/search-location',
-  params: {
-    location: location,
-    checkin: checkin,
-    checkout: checkout,
-    adults: adults,
-    children: children,
-    pets: pets,
-    page: '1',
-    currency: 'USD'
-  },
-  headers: {
-    'X-RapidAPI-Key': process.env.AIRBNB_API_KEY,
-    'X-RapidAPI-Host': 'airbnb13.p.rapidapi.com'
+
+
+  const options = {
+    method: 'GET',
+    url: 'https://airbnb13.p.rapidapi.com/search-location',
+    params: {
+      location: location,
+      checkin: checkin,
+      checkout: checkout,
+      adults: adults,
+      children: children,
+      pets: pets,
+      page: '1',
+      currency: 'USD'
+    },
+    headers: {
+      'X-RapidAPI-Key': process.env.AIRBNB_API_KEY,
+      'X-RapidAPI-Host': 'airbnb13.p.rapidapi.com'
+    }
+  };
+
+  try {
+    const response = await axios.request(options);
+    console.log(response.data.results);
+    res.send(response.data);
+  } catch (error) {
+    console.error(error);
   }
-};
-
-try {
-	const response = await axios.request(options);
-	console.log(response.data.results);
-  res.send(response.data);
-} catch (error) {
-	console.error(error);
-}
-//   axios.get(url, config)
-// .then(response => response.data.RECDATA.map(location => new Airbnb(location)))
-// .then(formattedData => res.status(200).send(formattedData))
-// .catch(err => next(err));
-// console.log(url, config);
+  //   axios.get(url, config)
+  // .then(response => response.data.RECDATA.map(location => new Airbnb(location)))
+  // .then(formattedData => res.status(200).send(formattedData))
+  // .catch(err => next(err));
+  // console.log(url, config);
 
 }
 
@@ -69,7 +69,7 @@ class Airbnb {
 module.exports = getAirbnb;
 
 
- 
+
 
 
 
